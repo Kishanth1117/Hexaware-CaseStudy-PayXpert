@@ -4,17 +4,17 @@ import java.util.Date;
 
 public class PayRoll 
 {
-	
-    private int payrollId;
-    private int employeeId;
-    private Date payPeriodStart;
-    private Date payPeriodEnd;
-    private double basicSalary;
-    private double overtime;
-    private double deductions;
-    private double netSalary;
-    private Date paymentDate;
-    
+
+	private int payrollId;
+	private int employeeId;
+	private Date payPeriodStart;
+	private Date payPeriodEnd;
+	private double basicSalary;
+	private double overtime;
+	private double deductions;
+	private double netSalary;
+	private Date paymentDate;
+
 	public int getPayrollId() {
 		return payrollId;
 	}
@@ -69,14 +69,14 @@ public class PayRoll
 	public void setPaymentDate(Date paymentDate) {
 		this.paymentDate = paymentDate;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "PayRoll [payrollId=" + payrollId + ", employeeId=" + employeeId + ", payPeriodStart=" + payPeriodStart
 				+ ", payPeriodEnd=" + payPeriodEnd + ", basicSalary=" + basicSalary + ", overtime=" + overtime
 				+ ", deductions=" + deductions + ", netSalary=" + netSalary + ", paymentDate=" + paymentDate + "]";
 	}
-	
+
 	public PayRoll(int payrollId, int employeeId, Date payPeriodStart, Date payPeriodEnd, double basicSalary,
 			double overtime, double deductions, double netSalary, Date paymentDate) {
 		super();
@@ -90,10 +90,10 @@ public class PayRoll
 		this.netSalary = netSalary;
 		this.paymentDate = paymentDate;
 	}
-	
+
 	public PayRoll() {
 		super();
 		// TODO Auto-generated constructor stub
 	}	
-	
+
 }

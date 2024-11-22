@@ -4,18 +4,18 @@ import java.util.Date;
 
 public class Employee 
 {
-	
+
 	private int employeeId;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phoneNumber;
-    private Date hireDate;
-    private String jobTitle;
-    private String department;
-    private double salary;
-    private Gender gender;
-    
+	private String firstName;
+	private String lastName;
+	private String email;
+	private String phoneNumber;
+	private Date hireDate;
+	private String jobTitle;
+	private String department;
+	private double salary;
+	private Gender gender;
+
 	public int getEmployeeId() {
 		return employeeId;
 	}
@@ -76,14 +76,14 @@ public class Employee
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Employee [employeeId=" + employeeId + ", firstName=" + firstName + ", lastName=" + lastName + ", email="
 				+ email + ", phoneNumber=" + phoneNumber + ", hireDate=" + hireDate + ", jobTitle=" + jobTitle
 				+ ", department=" + department + ", salary=" + salary + ", gender=" + gender + "]";
 	}
-	
+
 	public Employee(int employeeId, String firstName, String lastName, String email, String phoneNumber, Date hireDate,
 			String jobTitle, String department, double salary, Gender gender) {
 		super();
@@ -98,11 +98,11 @@ public class Employee
 		this.salary = salary;
 		this.gender = gender;
 	}
-	
+
 	public Employee() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-    
-   
+
+
 }

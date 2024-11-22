@@ -2,13 +2,13 @@ package com.java.payxpert.model;
 
 public class Tax 
 {
-	
+
 	private int taxId;
-    private int employeeId;
-    private String taxYear;
-    private double taxableIncome;
-    private double taxAmount;
-    private double taxPercentage;
+	private int employeeId;
+	private String taxYear;
+	private double taxableIncome;
+	private double taxAmount;
+	private double taxPercentage;
 	public int getTaxId() {
 		return taxId;
 	}
@@ -64,5 +64,5 @@ public class Tax
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
+
 }
