@@ -1,6 +1,7 @@
 -- Create the database
 CREATE DATABASE IF NOT EXISTS payxpert;
 USE payxpert;
+show tables;
 
 -- Create employees table
 CREATE TABLE employees (
@@ -52,6 +53,27 @@ CREATE TABLE financial_records (
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 
+-- For overtime calculations
+CREATE TABLE attendance (
+    attendance_id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_id INT NOT NULL,
+    attendance_date DATE NOT NULL,
+    overtime_hours DECIMAL(5,2) DEFAULT 0.0,
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+-- For deductions
+CREATE TABLE employee_deductions (
+    deduction_id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_id INT NOT NULL,
+    deduction_type VARCHAR(50) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    start_date DATE NOT NULL,
+    end_date DATE,
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
 -- Employee Table Entries
 INSERT INTO employees (first_name, last_name, email, phone_number, hire_date, job_title, department, salary, gender) 
 VALUES 
@@ -88,19 +110,74 @@ VALUES
 (4, '2023-11-15', 'Professional Development', 1000.00, 'DEDUCTION'),
 (5, '2023-11-15', 'Sales Commission', 3000.00, 'INCOME');
 
--- Disable foreign key checks to avoid constraint issues
-SET FOREIGN_KEY_CHECKS = 0;
+-- Attendance Table Entries (for November 2023)
+INSERT INTO attendance (employee_id, attendance_date, overtime_hours) 
+VALUES 
+-- John Doe (matches his overtime pay of 500.00)
+(1, '2023-11-10', 2.5),
+(1, '2023-11-15', 1.5),
+(1, '2023-11-20', 2.0),
 
--- Drop all tables
-DROP TABLE IF EXISTS financial_records;
-DROP TABLE IF EXISTS tax;
-DROP TABLE IF EXISTS payroll;
-DROP TABLE IF EXISTS employees;
+-- Jane Smith (no overtime)
+(2, '2023-11-01', 0.0),
+(2, '2023-11-15', 0.0),
+(2, '2023-11-30', 0.0),
 
--- Re-enable foreign key checks
-SET FOREIGN_KEY_CHECKS = 1;
+-- Mike Johnson (matches his overtime pay of 1000.00)
+(3, '2023-11-05', 3.0),
+(3, '2023-11-15', 2.5),
+(3, '2023-11-25', 2.5),
+
+-- Sarah Williams (matches her overtime pay of 300.00)
+(4, '2023-11-12', 1.0),
+(4, '2023-11-22', 0.5),
+(4, '2023-11-28', 1.0),
+
+-- David Brown (matches his overtime pay of 700.00)
+(5, '2023-11-08', 2.0),
+(5, '2023-11-18', 1.5),
+(5, '2023-11-28', 2.0);
+
+-- Employee Deductions Table Entries
+INSERT INTO employee_deductions (employee_id, deduction_type, amount, is_active, start_date) 
+VALUES 
+-- John Doe (Total deductions: 1000.00)
+(1, 'INSURANCE', 500.00, true, '2023-01-15'),
+(1, 'PENSION', 5.00, true, '2023-01-15'),  -- 5% of basic salary
+
+-- Jane Smith (Total deductions: 800.00)
+(2, 'INSURANCE', 400.00, true, '2023-02-20'),
+(2, 'PENSION', 4.00, true, '2023-02-20'),  -- 4% of basic salary
+
+-- Mike Johnson (Total deductions: 1500.00)
+(3, 'INSURANCE', 600.00, true, '2023-03-10'),
+(3, 'PENSION', 6.00, true, '2023-03-10'),  -- 6% of basic salary
+(3, 'LOAN', 300.00, true, '2023-03-10'),
+
+-- Sarah Williams (Total deductions: 900.00)
+(4, 'INSURANCE', 450.00, true, '2023-04-05'),
+(4, 'PENSION', 5.00, true, '2023-04-05'),  -- 5% of basic salary
+
+-- David Brown (Total deductions: 1200.00)
+(5, 'INSURANCE', 550.00, true, '2023-05-01'),
+(5, 'PENSION', 5.50, true, '2023-05-01'),  -- 5.5% of basic salary
+(5, 'PROFESSIONAL_FEES', 200.00, true, '2023-05-01');
 
 select * from employees;
 select * from financial_records;
 select * from payroll;
 select * from tax;
+select * from attendance;
+select * from employee_deductions;
+
+-- Check if tables exist and then drop them
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS financial_records;
+DROP TABLE IF EXISTS payroll;
+DROP TABLE IF EXISTS tax;
+DROP TABLE IF EXISTS attendance;
+DROP TABLE IF EXISTS employee_deductions;
+
+SET FOREIGN_KEY_CHECKS = 1;

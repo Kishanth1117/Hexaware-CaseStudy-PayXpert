@@ -20,12 +20,17 @@ public class PayrollServiceImpl implements IPayrollService {
                 "pay_period_start, pay_period_end, payment_date) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             
-            // Get employee's basic salary
-            double basicSalary = getEmployeeBasicSalary(conn, employeeId);
+            // Get employee's basic salary (monthly)
+            double basicSalary = getEmployeeBasicSalary(conn, employeeId) / 12;
+            
+            // Calculate overtime and deductions
             double overtimePay = calculateOvertimePay(employeeId, startDate, endDate);
             double deductions = calculateDeductions(employeeId);
+            
+            // Calculate net salary
             double netSalary = basicSalary + overtimePay - deductions;
             
+            // Set values in prepared statement
             stmt.setInt(1, employeeId);
             stmt.setDouble(2, basicSalary);
             stmt.setDouble(3, overtimePay);
@@ -155,30 +160,27 @@ public class PayrollServiceImpl implements IPayrollService {
 
     private double calculateOvertimePay(int employeeId, String startDate, String endDate) {
         try (Connection conn = ConnectionHelper.getConnection()) {
-            // Get employee's hourly rate (assuming monthly salary)
-            double basicSalary = getEmployeeBasicSalary(conn, employeeId);
-            double hourlyRate = basicSalary / (22 * 8); // 22 working days, 8 hours per day
+            // Get employee's hourly rate (based on monthly salary)
+            double monthlySalary = getEmployeeBasicSalary(conn, employeeId) / 12;
+            double hourlyRate = monthlySalary / (22 * 8); // 22 working days, 8 hours per day
             
-            // Get overtime hours from attendance or timesheet records
             String sql = "SELECT SUM(overtime_hours) as total_overtime " +
                         "FROM attendance " +
                         "WHERE employee_id = ? " +
                         "AND attendance_date BETWEEN ? AND ?";
                         
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, employeeId);
-                stmt.setDate(2, java.sql.Date.valueOf(startDate));
-                stmt.setDate(3, java.sql.Date.valueOf(endDate));
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, employeeId);
+                ps.setDate(2, java.sql.Date.valueOf(startDate));
+                ps.setDate(3, java.sql.Date.valueOf(endDate));
                 
-                ResultSet rs = stmt.executeQuery();
+                ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
                     double overtimeHours = rs.getDouble("total_overtime");
-                    // Overtime rate is 1.5 times the regular hourly rate
-                    return overtimeHours * hourlyRate * 1.5;
+                    return overtimeHours * hourlyRate * 1.5; // 1.5x overtime rate
                 }
             }
         } catch (Exception e) {
-            // Log error and return 0 if calculation fails
             System.err.println("Error calculating overtime: " + e.getMessage());
         }
         return 0.0;
@@ -187,31 +189,31 @@ public class PayrollServiceImpl implements IPayrollService {
     private double calculateDeductions(int employeeId) {
         try (Connection conn = ConnectionHelper.getConnection()) {
             double totalDeductions = 0.0;
+            double monthlySalary = getEmployeeBasicSalary(conn, employeeId) / 12;
             
-            // 1. Calculate Tax Deduction (assuming 10% of basic salary)
-            double basicSalary = getEmployeeBasicSalary(conn, employeeId);
-            double taxDeduction = basicSalary * 0.10;
+            // 1. Standard deductions (15% of monthly salary)
+            totalDeductions += monthlySalary * 0.15;
             
-            // 2. Get other standard deductions from deductions table
+            // 2. Get additional deductions from employee_deductions table
             String sql = "SELECT deduction_type, amount " +
                         "FROM employee_deductions " +
                         "WHERE employee_id = ? " +
                         "AND is_active = true";
                         
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, employeeId);
-                ResultSet rs = stmt.executeQuery();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, employeeId);
+                ResultSet rs = ps.executeQuery();
                 
                 while (rs.next()) {
-                    String deductionType = rs.getString("deduction_type");
+                    String type = rs.getString("deduction_type");
                     double amount = rs.getDouble("amount");
                     
-                    switch (deductionType) {
+                    switch (type) {
                         case "INSURANCE":
                             totalDeductions += amount;
                             break;
                         case "PENSION":
-                            totalDeductions += basicSalary * (amount / 100); // Pension as percentage
+                            totalDeductions += monthlySalary * (amount / 100);
                             break;
                         case "LOAN":
                             totalDeductions += amount;
@@ -221,13 +223,8 @@ public class PayrollServiceImpl implements IPayrollService {
                     }
                 }
             }
-            
-            // Add tax deduction to total deductions
-            totalDeductions += taxDeduction;
             return totalDeductions;
-            
         } catch (Exception e) {
-            // Log error and return 0 if calculation fails
             System.err.println("Error calculating deductions: " + e.getMessage());
         }
         return 0.0;
