@@ -158,13 +158,14 @@ public class PayrollServiceImpl implements IPayrollService {
 		}
 	}
 
-	private double calculateOvertimePay(int employeeId, String startDate, String endDate) {
+	private double calculateOvertimePay(int employeeId, String startDate, String endDate) throws SQLException, ClassNotFoundException {
 		try (Connection conn = ConnectionHelper.getConnection()) {
-			// Get employee's hourly rate (based on monthly salary)
+			// Get employee's monthly salary
 			double monthlySalary = getEmployeeBasicSalary(conn, employeeId) / 12;
-			double hourlyRate = monthlySalary / (22 * 8); // 22 working days, 8 hours per day
+			// Calculate hourly rate (22 working days, 8 hours per day)
+			double hourlyRate = monthlySalary / (22 * 8);
 
-			String sql = "SELECT SUM(overtime_hours) as total_overtime " +
+			String sql = "SELECT COALESCE(SUM(overtime_hours), 0) as total_overtime " +
 					"FROM attendance " +
 					"WHERE employee_id = ? " +
 					"AND attendance_date BETWEEN ? AND ?";
@@ -177,24 +178,22 @@ public class PayrollServiceImpl implements IPayrollService {
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
 					double overtimeHours = rs.getDouble("total_overtime");
-					return overtimeHours * hourlyRate * 1.5; // 1.5x overtime rate
+					return Math.round(overtimeHours * hourlyRate * 1.5 * 100.0) / 100.0; // 1.5x overtime rate, rounded to 2 decimals
 				}
 			}
-		} catch (Exception e) {
-			System.err.println("Error calculating overtime: " + e.getMessage());
 		}
 		return 0.0;
 	}
 
 	private double calculateDeductions(int employeeId) {
 		try (Connection conn = ConnectionHelper.getConnection()) {
-			double totalDeductions = 0.0;
 			double monthlySalary = getEmployeeBasicSalary(conn, employeeId) / 12;
+			double totalDeductions = 0.0;
 
-			// 1. Standard deductions (15% of monthly salary)
-			totalDeductions += monthlySalary * 0.15;
+			// Tax deduction (10%)
+			totalDeductions += monthlySalary * 0.10;
 
-			// 2. Get additional deductions from employee_deductions table
+			// Get fixed deductions from employee_deductions table
 			String sql = "SELECT deduction_type, amount " +
 					"FROM employee_deductions " +
 					"WHERE employee_id = ? " +
@@ -208,17 +207,9 @@ public class PayrollServiceImpl implements IPayrollService {
 					String type = rs.getString("deduction_type");
 					double amount = rs.getDouble("amount");
 
-					switch (type) {
-					case "INSURANCE":
-						totalDeductions += amount;
-						break;
-					case "PENSION":
-						totalDeductions += monthlySalary * (amount / 100);
-						break;
-					case "LOAN":
-						totalDeductions += amount;
-						break;
-					default:
+					if (type.equals("PENSION")) {
+						totalDeductions += monthlySalary * (amount / 100.0);
+					} else {
 						totalDeductions += amount;
 					}
 				}

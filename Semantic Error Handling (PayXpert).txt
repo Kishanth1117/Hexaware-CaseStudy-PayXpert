@@ -1,356 +1,4 @@
-Please review the entire project we have completed so far. I will list all the classes we have implemented based on the annexure provided. After I mention the classes, please run the code and check for any final semantic errors. If you identify any errors, I will refer back to the annexure, and we can review the code together to address those issues. If there are no errors, please provide comprehensive test cases (according to DML entries given already) that cover all menu-driven functions and their operations, demonstrating that all functionalities of the program are working 100% successfully.
-
-The Payroll Management System
-
-Instructions:
-•	You will have a comprehensive application implemented in Java with a strong focus on SQL schema design, control flow statements, loops, arrays, collections, and database interaction.
-•	Follow object-oriented principles throughout the Java programming assignments. Use classes and objects to model real-world entities, encapsulate data and behavior, and ensure code reusability.
-•	Throw user defined exception from method and handle in the main method.
-•	The following Directory structure is to be followed in the application.
-o	entity/model
-	Create entity classes in this package. All entity class should not have any business logic.
-o	dao
-	Create Service Provider interface/abstract class to showcase functionalities.
-	Create the implementation class for the above interface/abstract class with db interaction.
-o	exception
-	Create user defined exceptions in this package and handle exceptions whenever needed.
- 
-o	util
- 
-	Create a DBPropertyUtil class with a static function which takes property file name as parameter and returns connection string.
-	Create a DBConnUtil class which holds static method which takes connection string as parameter file and returns connection object.
- 
-o	main
-	Create a class MainModule and demonstrate the functionalities in a menu driven application.
-Key Functionalities:
-Employee Management:
-•	CRUD operations for employee data, including personal details, position, and employment history.
-Payroll Processing:
-•	Automated calculation of employee salaries and deductions.
-•	Generation of pay stubs for each pay period.
-Tax Calculation:
-•	Automatic computation of taxes based on employee income and deductions.
-Financial Reporting:
-•	Generation of financial reports, including income statements and tax summaries.
- 
-Create following tables in SQL Schema with appropriate class and write the unit test case for the application.
-
-SQL Tables:
-
-1.	Employee Table:
-•	EmployeeID (Primary Key): Unique identifier for each employee.
-•	FirstName: First name of the employee.
-•	LastName: Last name of the employee.
-•	DateOfBirth: Date of birth of the employee.
-•	Gender: Gender of the employee.
-•	Email: Email address of the employee.
-•	PhoneNumber: Phone number of the employee.
-•	Address: Residential address of the employee.
-•	Position: Job title or position of the employee.
-•	JoiningDate: Date when the employee joined the company.
-•	TerminationDate: Date when the employee left the company (nullable).
-2.	Payroll Table:
-•	PayrollID (Primary Key): Unique identifier for each payroll record.
-•	EmployeeID (Foreign Key): Foreign key referencing the Employee table.
-•	PayPeriodStartDate: Start date of the pay period.
-•	PayPeriodEndDate: End date of the pay period.
-•	BasicSalary: Base salary for the pay period.
-•	OvertimePay: Additional pay for overtime hours.
-•	Deductions: Total deductions for the pay period.
-•	NetSalary: Net salary after deductions.
-3.	Tax Table:
-•	TaxID (Primary Key): Unique identifier for each tax record.
-•	EmployeeID (Foreign Key): Foreign key referencing the Employee table.
-•	TaxYear: Year to which the tax information applies.
-•	TaxableIncome: Income subject to taxation.
-•	TaxAmount: Amount of tax to be paid.
-4.	FinancialRecord Table:
-•	RecordID (Primary Key): Unique identifier for each financial record.
-•	EmployeeID (Foreign Key): Foreign key referencing the Employee table.
-•	RecordDate: Date of the financial record.
-•	Description: Description or category of the financial record.
-•	Amount: Monetary amount of the record (income, expense, etc.).
-•	RecordType: Type of financial record (income, expense, tax payment, etc.).
- 
-Create the model/entity classes corresponding to the schema within package entity with variables declared private, constructors (default and parametrized) and getters,setters )
-
-Classes:
-
-•	Employee:
-•	Properties: EmployeeID, FirstName, LastName, DateOfBirth, Gender, Email, PhoneNumber, Address, Position, JoiningDate, TerminationDate
-•	Methods: CalculateAge()
-•	Payroll:
-•	Properties: PayrollID, EmployeeID, PayPeriodStartDate, PayPeriodEndDate, BasicSalary, OvertimePay, Deductions, NetSalary
-•	Tax:
-•	Properties: TaxID, EmployeeID, TaxYear, TaxableIncome, TaxAmount
-•	FinancialRecord:
-•	Properties: RecordID, EmployeeID, RecordDate, Description, Amount, RecordType
-•	EmployeeService (implements IEmployeeService):
-•	Methods: GetEmployeeById, GetAllEmployees, AddEmployee, UpdateEmployee, RemoveEmployee
-•	PayrollService (implements IPayrollService):
-•	Methods: GeneratePayroll, GetPayrollById, GetPayrollsForEmployee, GetPayrollsForPeriod
-•	TaxService (implements ITaxService):
-•	Methods: CalculateTax, GetTaxById, GetTaxesForEmployee, GetTaxesForYear
-•	FinancialRecordService (implements IFinancialRecordService):
-•	Methods: AddFinancialRecord, GetFinancialRecordById, GetFinancialRecordsForEmployee, GetFinancialRecordsForDate
-•	DatabaseContext:
-•	A class responsible for handling database connections and interactions.
-•	ValidationService:
-•	A class for input validation and business rule enforcement.
-•	ReportGenerator:
-•	A class for generating various reports based on payroll, tax, and financial record data.
-
-Interfaces/Abstract class:
-•	IEmployeeService:
-•	GetEmployeeById(employeeId)
-•	GetAllEmployees()
-•	AddEmployee(employeeData)
-•	UpdateEmployee(employeeData)
-•	RemoveEmployee(employeeId)
-•	IPayrollService:
-•	GeneratePayroll(employeeId, startDate, endDate)
-•	GetPayrollById(payrollId)
-•	GetPayrollsForEmployee(employeeId)
-•	GetPayrollsForPeriod(startDate, endDate)
- 
-•	ITaxService:
-•	CalculateTax(employeeId, taxYear)
-•	GetTaxById(taxId)
-•	GetTaxesForEmployee(employeeId)
-•	GetTaxesForYear(taxYear)
-•	IFinancialRecordService:
-•	AddFinancialRecord(employeeId, description, amount, recordType)
-•	GetFinancialRecordById(recordId)
-•	GetFinancialRecordsForEmployee(employeeId)
-•	GetFinancialRecordsForDate(recordDate)
-
-
-Connect your application to the SQL database:
-•	Create a connection string that includes the necessary information to connect to your SQL Server database. This includes the server name, database name, authentication credentials, and any
-other relevant settings.
-•	Use the SqlConnection class to establish a connection to the SQL Server database.
-•	Once the connection is open, you can use the SqlCommand class to execute SQL queries.
-
-Custom Exceptions:
-
-EmployeeNotFoundException:
-•	Thrown when attempting to access or perform operations on a non-existing employee.
-
-PayrollGenerationException:
-•	Thrown when there is an issue with generating payroll for an employee.
-
-TaxCalculationException:
-•	Thrown when there is an error in calculating taxes for an employee.
-
-FinancialRecordException:
-•	Thrown when there is an issue with financial record management.
-
-InvalidInputException:
-•	Thrown when input data doesn't meet the required criteria.
-DatabaseConnectionException:
-•	Thrown when there is a problem establishing or maintaining a connection with the database.
-
-Unit Testing:
-Create NUnit test cases for car rental System are essential to ensure the correctness and reliability of your system. Below are some example questions to guide the creation of NUnit test cases for various components of the system:
-
-Test Case: CalculateGrossSalaryForEmployee
-•	Objective: Verify that the system correctly calculates the gross salary for an employee.
- 
-Test Case: CalculateNetSalaryAfterDeductions
-•	Objective: Ensure that the system accurately calculates the net salary after deductions (taxes, insurance, etc.).
-
-Test Case: VerifyTaxCalculationForHighIncomeEmployee
-•	Objective: Test the system's ability to calculate taxes for a high-income employee.
-Test Case: ProcessPayrollForMultipleEmployees
-•	Objective: Test the end-to-end payroll processing for a batch of employees.
-
-Test Case: VerifyErrorHandlingForInvalidEmployeeData
-•	Objective: Ensure the system handles invalid input data gracefully.
-
-
-pom.xml:
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <groupId>Hexaware</groupId>
-  <artifactId>PayXpert</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
-
-  <name>PayXpert</name>
-  <url>http://example.com</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>17</java.version>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-  </properties>
-
-  <dependencies>
-  	<dependency>
-	    <groupId>org.junit.jupiter</groupId>
-	    <artifactId>junit-jupiter</artifactId>
-	    <version>5.8.2</version>
-	    <scope>test</scope>
-	</dependency>
-  
-  	<dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-java</artifactId>
-    <version>8.0.33</version>
-	</dependency>
-	
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>17.0</version>
-    </dependency>
-
-    <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13.2</version>
-        <scope>test</scope>
-    </dependency>
-    
-    <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>4.5.1</version>
-        <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <version>1.3</version>
-      <scope>test</scope>
-    </dependency>
-    
-    <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.32</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.6</version>
-        </dependency>
-        
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
-      </plugin>
-      <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-	  </plugin>
-    </plugins>
-  </build>
-</project>
-
-
-db/payxpert.sql:
--- Create the database
-CREATE DATABASE IF NOT EXISTS payxpert;
-USE payxpert;
-
--- Check if tables exist and then drop them
-SET FOREIGN_KEY_CHECKS = 0;
-
-DROP TABLE IF EXISTS employees;
-DROP TABLE IF EXISTS financial_records;
-DROP TABLE IF EXISTS payroll;
-DROP TABLE IF EXISTS tax;
-DROP TABLE IF EXISTS attendance;
-DROP TABLE IF EXISTS employee_deductions;
-
-SET FOREIGN_KEY_CHECKS = 1;
-
--- Create employees table
-CREATE TABLE employees (
-    employee_id INT PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone_number VARCHAR(20),
-    hire_date DATE NOT NULL,
-    job_title VARCHAR(100) NOT NULL,
-    department VARCHAR(100) NOT NULL,
-    salary DECIMAL(10,2) NOT NULL,
-    gender VARCHAR(10) NOT NULL CHECK (gender IN ('MALE', 'FEMALE', 'OTHER'))
-);
-
--- Create payroll table
-CREATE TABLE payroll (
-    payroll_id INT PRIMARY KEY AUTO_INCREMENT,
-    employee_id INT NOT NULL,
-    basic_salary DECIMAL(10,2) NOT NULL,
-    overtime_pay DECIMAL(10,2),
-    deductions DECIMAL(10,2),
-    net_salary DECIMAL(10,2) NOT NULL,
-    pay_period_start DATE NOT NULL,
-    pay_period_end DATE NOT NULL,
-    payment_date DATE NOT NULL,
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
-);
-
--- Create tax table
-CREATE TABLE tax (
-    tax_id INT PRIMARY KEY AUTO_INCREMENT,
-    employee_id INT NOT NULL,
-    tax_year VARCHAR(4) NOT NULL,
-    taxable_income DECIMAL(10,2) NOT NULL,
-    tax_amount DECIMAL(10,2) NOT NULL,
-    tax_percentage DECIMAL(5,2) NOT NULL,
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
-);
-
--- Create financial_records table
-CREATE TABLE financial_records (
-    record_id INT PRIMARY KEY AUTO_INCREMENT,
-    employee_id INT NOT NULL,
-    record_date DATE NOT NULL,
-    description VARCHAR(255) NOT NULL,
-    amount DECIMAL(10,2) NOT NULL,
-    record_type VARCHAR(50) NOT NULL,
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
-);
-
--- For overtime calculations
-CREATE TABLE attendance (
-    attendance_id INT PRIMARY KEY AUTO_INCREMENT,
-    employee_id INT NOT NULL,
-    attendance_date DATE NOT NULL,
-    overtime_hours DECIMAL(5,2) DEFAULT 0.0,
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
-);
-
--- For deductions
-CREATE TABLE employee_deductions (
-    deduction_id INT PRIMARY KEY AUTO_INCREMENT,
-    employee_id INT NOT NULL,
-    deduction_type VARCHAR(50) NOT NULL,
-    amount DECIMAL(10,2) NOT NULL,
-    is_active BOOLEAN DEFAULT true,
-    start_date DATE NOT NULL,
-    end_date DATE,
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
-);
+there is still some another small enquiry based on the output... ill first attach the dml query which represents the data/values/rows/entries present in each tables initially
 
 -- Employee Table Entries
 INSERT INTO employees (first_name, last_name, email, phone_number, hire_date, job_title, department, salary, gender) 
@@ -441,21 +89,218 @@ VALUES
 (5, 'PENSION', 5.50, true, '2023-05-01'),  -- 5.5% of basic salary
 (5, 'PROFESSIONAL_FEES', 200.00, true, '2023-05-01');
 
--- Displaying all tables
-select * from employees;
-select * from financial_records;
-select * from payroll;
-select * from tax;
-select * from attendance;
-select * from employee_deductions;
+based on this entries... next ill post the comprehensive test cases which we use to test the output matches the expected output or not... 
 
+=== REVISED COMPREHENSIVE TEST CASE FOR PAYXPERT SYSTEM ===
 
-db.properties:
-driver=com.mysql.cj.jdbc.Driver
-url=jdbc:mysql://localhost:3306/payxpert
-user=root
-password=327748
+1. EMPLOYEE MANAGEMENT TESTING (Already Working)
 
+1.1. View All Employees (Initial State)
+Action: Select Option 1 -> 5
+Expected Output: Display of 5 existing employees:
+- John Doe (ID: 1)
+- Jane Smith (ID: 2)
+- Mike Johnson (ID: 3)
+- Sarah Williams (ID: 4)
+- David Brown (ID: 5)
+
+1.2. Add New Employee
+Action: Select Option 1 -> 1
+Input:
+- First Name: Robert
+- Last Name: Wilson
+- Email: robert.wilson@email.com
+- Phone: 6789012345
+- Gender: MALE
+- Hire Date: 2024-01-15
+- Job Title: Sales Manager
+- Department: Sales
+- Salary: 80000
+Expected Output: "Employee added successfully!"
+
+1.3. View Employee Details
+Action: Select Option 1 -> 4
+Input: Employee ID: 6 (Robert Wilson)
+Expected Output: Complete details of Robert Wilson
+
+1.4. Update Employee
+Action: Select Option 1 -> 2
+Input: 
+- Employee ID: 6
+- New Salary: 85000
+- New Phone: 6789012346
+Expected Output: "Employee updated successfully!"
+
+1.5. Remove Employee
+Action: Select Option 1 -> 3
+Input: Employee ID: 5 (David Brown)
+Expected Output: "Employee removed successfully!"
+
+2. PAYROLL MANAGEMENT TESTING (Revised)
+
+2.1. Generate Monthly Payroll
+Action: Select 2 -> 1
+Input:
+- Employee ID: 1 (John Doe)
+- Start Date: 2024-01-01
+- End Date: 2024-01-31
+Expected Output:
+- Basic Salary: 6250.00 (75000/12)
+- Overtime: Calculate from attendance records
+  * Hourly Rate = 6250/(22*8) ≈ 35.51
+  * Total Overtime Hours from attendance = 6.0
+  * Overtime Pay = 6.0 * 35.51 * 1.5 ≈ 319.59
+- Deductions:
+  * Tax (10%): 625.00
+  * Insurance: 500.00
+  * Pension (5%): 312.50
+  Total Deductions: 1437.50
+- Net Salary: 5132.09 (6250 + 319.59 - 1437.50)
+
+2.2. View Payroll by ID
+Action: Select 2 -> 2
+Input: Latest generated payroll ID
+Expected Output: Complete payroll details matching above calculations
+
+2.3. View Employee Payrolls
+Action: Select 2 -> 3
+Input: Employee ID: 1
+Expected Output: List of all payrolls including:
+- Previous payroll from November 2023
+- Newly generated January 2024 payroll
+
+2.4. View Payrolls for Period
+Action: Select 2 -> 4
+Input:
+- Start Date: 2024-01-01
+- End Date: 2024-01-31
+Expected Output: All January 2024 payrolls
+
+3. TAX MANAGEMENT TESTING (Revised)
+
+3.1. Calculate Tax
+Action: Select 3 -> 1
+Input:
+- Employee ID: 3 (Mike Johnson, Salary: 95000)
+- Tax Year: 2024
+Expected Output:
+- Taxable Income: 95000.00
+- Tax Calculation:
+  * First 250000: 0
+  * 250000-500000: 12500 (5%)
+  * 500000-1000000: 90000 * 20% = 18000
+  Total Tax: 30500
+- Tax Percentage: 32.11%
+
+3.2. View Tax by ID
+Action: Select 3 -> 2
+Input: Latest generated tax ID
+Expected Output: Complete tax details matching above calculation
+
+3.3. View Employee Taxes
+Action: Select 3 -> 3
+Input: Employee ID: 3
+Expected Output: 
+- 2023 tax record (from initial data)
+- 2024 tax record (newly calculated)
+
+4. FINANCIAL RECORDS TESTING (Revised)
+
+4.1. Add Financial Record
+Action: Select 4 -> 1
+Input:
+- Employee ID: 2 (Jane Smith)
+- Date: 2024-01-15
+- Description: Performance Bonus
+- Amount: 5000
+- Record Type: BONUS
+Expected Output: "Financial record added successfully!"
+Verify: Record appears in database with correct details
+
+4.2. View Record by ID
+Action: Select 4 -> 2
+Input: Latest generated record ID
+Expected Output:
+- Record ID: [new_id]
+- Employee ID: 2
+- Date: 2024-01-15
+- Description: Performance Bonus
+- Amount: 5000.00
+- Type: BONUS
+
+4.3. View Employee Records
+Action: Select 4 -> 3
+Input: Employee ID: 2
+Expected Output:
+- Previous record: Health Insurance (from initial data)
+- New record: Performance Bonus
+
+4.4. View Records for Date
+Action: Select 4 -> 4
+Input: Date: 2024-01-15
+Expected Output: All records for January 15, 2024 including the new bonus record
+
+now during checking each and every output as per the comprehensive test cases to determine whether the output matches the expected output or not, there has been some differences in the output in comparison to the comprehensive test cases which present the exepected output... i'll specifically highlight those for your understanding
+
+Difference-1:
+From Comprehensive Test Case:
+2.1. Generate Monthly Payroll
+Action: Select 2 -> 1
+Input:
+- Employee ID: 1 (John Doe)
+- Start Date: 2024-01-01
+- End Date: 2024-01-31
+Expected Output:
+- Basic Salary: 6250.00 (75000/12)
+- Overtime: Calculate from attendance records
+  * Hourly Rate = 6250/(22*8) ≈ 35.51
+  * Total Overtime Hours from attendance = 6.0
+  * Overtime Pay = 6.0 * 35.51 * 1.5 ≈ 319.59
+- Deductions:
+  * Tax (10%): 625.00
+  * Insurance: 500.00
+  * Pension (5%): 312.50
+  Total Deductions: 1437.50
+- Net Salary: 5132.09 (6250 + 319.59 - 1437.50)
+
+From output terminal/console:
+=== Generate Payroll ===
+Enter Employee ID: 1
+Enter Start Date (yyyy-MM-dd): 2024-01-01
+Enter End Date (yyyy-MM-dd): 2024-01-31
+Payroll generated successfully:
+PayRoll [payrollId=6, employeeId=1, payPeriodStart=2024-01-01, payPeriodEnd=2024-01-31, basicSalary=6250.0, overtime=0.0, deductions=1750.0, netSalary=4500.0, paymentDate=2024-11-23]
+
+in this difference-1, we can observe that overtime, deductions, netSalary does not match with the expected output in the comprehensive test cases
+
+Difference-2:
+From Comprehensive test case:
+3.1. Calculate Tax
+Action: Select 3 -> 1
+Input:
+- Employee ID: 3 (Mike Johnson, Salary: 95000)
+- Tax Year: 2024
+Expected Output:
+- Taxable Income: 95000.00
+- Tax Calculation:
+  * First 250000: 0
+  * 250000-500000: 12500 (5%)
+  * 500000-1000000: 90000 * 20% = 18000
+  Total Tax: 30500
+- Tax Percentage: 32.11%
+
+From output terminal/console:
+=== Calculate Tax ===
+Enter Employee ID: 3
+Enter Tax Year (YYYY): 2024
+Tax calculated successfully:
+Tax [taxId=6, employeeId=3, taxYear=2024, taxableIncome=95000.0, taxAmount=0.0, taxPercentage=0.0]
+
+in this difference-2, we can observe that taxAmount and taxPercentage does not match with the expected output in the comprehensive test cases
+
+if this is an issue please rectify it... but i dont know whether this is issue or not... so check and tell
+
+current codes in all implementations and classes
 
 HighIncomeTaxTest.java:
 package com.java.payxpert.test;
@@ -2525,14 +2370,13 @@ public class PayrollServiceImpl implements IPayrollService {
 		}
 	}
 
-	private double calculateOvertimePay(int employeeId, String startDate, String endDate) throws SQLException, ClassNotFoundException {
+	private double calculateOvertimePay(int employeeId, String startDate, String endDate) {
 		try (Connection conn = ConnectionHelper.getConnection()) {
-			// Get employee's monthly salary
+			// Get employee's hourly rate (based on monthly salary)
 			double monthlySalary = getEmployeeBasicSalary(conn, employeeId) / 12;
-			// Calculate hourly rate (22 working days, 8 hours per day)
-			double hourlyRate = monthlySalary / (22 * 8);
+			double hourlyRate = monthlySalary / (22 * 8); // 22 working days, 8 hours per day
 
-			String sql = "SELECT COALESCE(SUM(overtime_hours), 0) as total_overtime " +
+			String sql = "SELECT SUM(overtime_hours) as total_overtime " +
 					"FROM attendance " +
 					"WHERE employee_id = ? " +
 					"AND attendance_date BETWEEN ? AND ?";
@@ -2545,22 +2389,24 @@ public class PayrollServiceImpl implements IPayrollService {
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
 					double overtimeHours = rs.getDouble("total_overtime");
-					return Math.round(overtimeHours * hourlyRate * 1.5 * 100.0) / 100.0; // 1.5x overtime rate, rounded to 2 decimals
+					return overtimeHours * hourlyRate * 1.5; // 1.5x overtime rate
 				}
 			}
+		} catch (Exception e) {
+			System.err.println("Error calculating overtime: " + e.getMessage());
 		}
 		return 0.0;
 	}
 
 	private double calculateDeductions(int employeeId) {
 		try (Connection conn = ConnectionHelper.getConnection()) {
-			double monthlySalary = getEmployeeBasicSalary(conn, employeeId) / 12;
 			double totalDeductions = 0.0;
+			double monthlySalary = getEmployeeBasicSalary(conn, employeeId) / 12;
 
-			// Tax deduction (10%)
-			totalDeductions += monthlySalary * 0.10;
+			// 1. Standard deductions (15% of monthly salary)
+			totalDeductions += monthlySalary * 0.15;
 
-			// Get fixed deductions from employee_deductions table
+			// 2. Get additional deductions from employee_deductions table
 			String sql = "SELECT deduction_type, amount " +
 					"FROM employee_deductions " +
 					"WHERE employee_id = ? " +
@@ -2574,9 +2420,17 @@ public class PayrollServiceImpl implements IPayrollService {
 					String type = rs.getString("deduction_type");
 					double amount = rs.getDouble("amount");
 
-					if (type.equals("PENSION")) {
-						totalDeductions += monthlySalary * (amount / 100.0);
-					} else {
+					switch (type) {
+					case "INSURANCE":
+						totalDeductions += amount;
+						break;
+					case "PENSION":
+						totalDeductions += monthlySalary * (amount / 100);
+						break;
+					case "LOAN":
+						totalDeductions += amount;
+						break;
+					default:
 						totalDeductions += amount;
 					}
 				}
@@ -2588,7 +2442,6 @@ public class PayrollServiceImpl implements IPayrollService {
 		return 0.0;
 	}
 }
-
 
 
 TaxServiceImpl.java:
@@ -2618,8 +2471,8 @@ public class TaxServiceImpl implements ITaxService {
 			// Calculate tax amount based on slabs
 			double taxAmount = calculateTaxAmount(taxableIncome);
 
-			// Calculate tax percentage (rounded to 2 decimal places)
-			double taxPercentage = Math.round((taxAmount / taxableIncome) * 10000.0) / 100.0;
+			// Calculate tax percentage
+			double taxPercentage = (taxAmount / taxableIncome) * 100;
 
 			// Create and save tax record
 			Tax tax = new Tax();
@@ -2731,19 +2584,12 @@ public class TaxServiceImpl implements ITaxService {
 		} else if (taxableIncome <= 500000) {
 			taxAmount = (taxableIncome - 250000) * 0.05;
 		} else if (taxableIncome <= 1000000) {
-			// First 250000: 0
-			// 250000-500000: (500000-250000)*0.05 = 12500
-			// 500000-taxableIncome: (taxableIncome-500000)*0.20
 			taxAmount = 12500 + ((taxableIncome - 500000) * 0.20);
 		} else {
-			// First 250000: 0
-			// 250000-500000: 12500
-			// 500000-1000000: 100000
-			// Above 1000000: (taxableIncome-1000000)*0.30
 			taxAmount = 112500 + ((taxableIncome - 1000000) * 0.30);
 		}
 
-		return Math.round(taxAmount * 100.0) / 100.0; // Round to 2 decimal places
+		return taxAmount;
 	}
 
 	private void saveTaxRecord(Connection conn, Tax tax) throws SQLException {
@@ -2755,7 +2601,7 @@ public class TaxServiceImpl implements ITaxService {
 			ps.setString(2, tax.getTaxYear());
 			ps.setDouble(3, tax.getTaxableIncome());
 			ps.setDouble(4, tax.getTaxAmount());
-			ps.setDouble(5, Math.round(tax.getTaxPercentage() * 100.0) / 100.0); // Round percentage
+			ps.setDouble(5, tax.getTaxPercentage());
 
 			ps.executeUpdate();
 
@@ -2777,7 +2623,6 @@ public class TaxServiceImpl implements ITaxService {
 		return tax;
 	}
 }
-
 
 
 
@@ -2871,3 +2716,5 @@ public interface ITaxService {
 			throws TaxCalculationException, DatabaseConnectionException, ClassNotFoundException;
 }
 
+
+based on these... rectify the semantic error occuring

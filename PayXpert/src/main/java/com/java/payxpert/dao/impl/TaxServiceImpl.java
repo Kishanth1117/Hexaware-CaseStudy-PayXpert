@@ -24,8 +24,8 @@ public class TaxServiceImpl implements ITaxService {
 			// Calculate tax amount based on slabs
 			double taxAmount = calculateTaxAmount(taxableIncome);
 
-			// Calculate tax percentage
-			double taxPercentage = (taxAmount / taxableIncome) * 100;
+			// Calculate tax percentage (rounded to 2 decimal places)
+			double taxPercentage = Math.round((taxAmount / taxableIncome) * 10000.0) / 100.0;
 
 			// Create and save tax record
 			Tax tax = new Tax();
@@ -137,12 +137,19 @@ public class TaxServiceImpl implements ITaxService {
 		} else if (taxableIncome <= 500000) {
 			taxAmount = (taxableIncome - 250000) * 0.05;
 		} else if (taxableIncome <= 1000000) {
+			// First 250000: 0
+			// 250000-500000: (500000-250000)*0.05 = 12500
+			// 500000-taxableIncome: (taxableIncome-500000)*0.20
 			taxAmount = 12500 + ((taxableIncome - 500000) * 0.20);
 		} else {
+			// First 250000: 0
+			// 250000-500000: 12500
+			// 500000-1000000: 100000
+			// Above 1000000: (taxableIncome-1000000)*0.30
 			taxAmount = 112500 + ((taxableIncome - 1000000) * 0.30);
 		}
 
-		return taxAmount;
+		return Math.round(taxAmount * 100.0) / 100.0; // Round to 2 decimal places
 	}
 
 	private void saveTaxRecord(Connection conn, Tax tax) throws SQLException {
@@ -154,7 +161,7 @@ public class TaxServiceImpl implements ITaxService {
 			ps.setString(2, tax.getTaxYear());
 			ps.setDouble(3, tax.getTaxableIncome());
 			ps.setDouble(4, tax.getTaxAmount());
-			ps.setDouble(5, tax.getTaxPercentage());
+			ps.setDouble(5, Math.round(tax.getTaxPercentage() * 100.0) / 100.0); // Round percentage
 
 			ps.executeUpdate();
 

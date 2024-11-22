@@ -174,7 +174,48 @@ Would you like me to execute this test case and provide the actual results for e
 === REVISED COMPREHENSIVE TEST CASE FOR PAYXPERT SYSTEM ===
 
 1. EMPLOYEE MANAGEMENT TESTING (Already Working)
-[Previous test cases remain the same as they're working correctly]
+
+1.1. View All Employees (Initial State)
+Action: Select Option 1 -> 5
+Expected Output: Display of 5 existing employees:
+- John Doe (ID: 1)
+- Jane Smith (ID: 2)
+- Mike Johnson (ID: 3)
+- Sarah Williams (ID: 4)
+- David Brown (ID: 5)
+
+1.2. Add New Employee
+Action: Select Option 1 -> 1
+Input:
+- First Name: Robert
+- Last Name: Wilson
+- Email: robert.wilson@email.com
+- Phone: 6789012345
+- Gender: MALE
+- Hire Date: 2024-01-15
+- Job Title: Sales Manager
+- Department: Sales
+- Salary: 80000
+Expected Output: "Employee added successfully!"
+
+1.3. View Employee Details
+Action: Select Option 1 -> 4
+Input: Employee ID: 6 (Robert Wilson)
+Expected Output: Complete details of Robert Wilson
+
+1.4. Update Employee
+Action: Select Option 1 -> 2
+Input: 
+- Employee ID: 6
+- New Salary: 85000
+- New Phone: 6789012346
+Expected Output: "Employee updated successfully!"
+
+1.5. Remove Employee
+Action: Select Option 1 -> 3
+Input: Employee ID: 5 (David Brown)
+Expected Output: "Employee removed successfully!"
+
 
 2. PAYROLL MANAGEMENT TESTING (Revised)
 
