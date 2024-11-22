@@ -1,7 +1,18 @@
 -- Create the database
 CREATE DATABASE IF NOT EXISTS payxpert;
 USE payxpert;
-show tables;
+
+-- Check if tables exist and then drop them
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS financial_records;
+DROP TABLE IF EXISTS payroll;
+DROP TABLE IF EXISTS tax;
+DROP TABLE IF EXISTS attendance;
+DROP TABLE IF EXISTS employee_deductions;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- Create employees table
 CREATE TABLE employees (
@@ -163,21 +174,10 @@ VALUES
 (5, 'PENSION', 5.50, true, '2023-05-01'),  -- 5.5% of basic salary
 (5, 'PROFESSIONAL_FEES', 200.00, true, '2023-05-01');
 
+-- Displaying all tables
 select * from employees;
 select * from financial_records;
 select * from payroll;
 select * from tax;
 select * from attendance;
 select * from employee_deductions;
-
--- Check if tables exist and then drop them
-SET FOREIGN_KEY_CHECKS = 0;
-
-DROP TABLE IF EXISTS employees;
-DROP TABLE IF EXISTS financial_records;
-DROP TABLE IF EXISTS payroll;
-DROP TABLE IF EXISTS tax;
-DROP TABLE IF EXISTS attendance;
-DROP TABLE IF EXISTS employee_deductions;
-
-SET FOREIGN_KEY_CHECKS = 1;
