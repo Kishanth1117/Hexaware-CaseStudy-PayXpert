@@ -119,7 +119,7 @@ public class TaxServiceImpl implements ITaxService {
     
     private double calculateTaxableIncome(Connection conn, int employeeId, String taxYear) throws SQLException {
         String sql = "SELECT SUM(basic_salary + overtime - deductions) as total_income " +
-                    "FROM payrolls WHERE employee_id = ? AND YEAR(pay_period_start) = ?";
+                    "FROM payroll WHERE employee_id = ? AND YEAR(pay_period_start) = ?";
                     
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, employeeId);

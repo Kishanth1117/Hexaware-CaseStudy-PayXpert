@@ -29,7 +29,7 @@ public class SalaryCalculationTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    	MockitoAnnotations.openMocks(this);
         payrollService = new PayrollServiceImpl();
     }
     

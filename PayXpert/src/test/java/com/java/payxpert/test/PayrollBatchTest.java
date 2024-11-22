@@ -31,7 +31,7 @@ public class PayrollBatchTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    	MockitoAnnotations.openMocks(this);
         payrollService = new PayrollServiceImpl();
     }
     

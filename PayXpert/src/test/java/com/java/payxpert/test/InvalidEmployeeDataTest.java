@@ -30,7 +30,7 @@ public class InvalidEmployeeDataTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    	MockitoAnnotations.openMocks(this);
         employeeService = new EmployeeServiceImpl();
     }
     

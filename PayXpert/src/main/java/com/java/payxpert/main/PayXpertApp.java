@@ -8,6 +8,9 @@ import java.util.Scanner;
 import com.java.payxpert.dao.*;
 import com.java.payxpert.dao.impl.*;
 import com.java.payxpert.model.*;
+//Add these imports at the top of PayXpertApp.java
+import com.java.payxpert.exception.EmployeeNotFoundException;
+import com.java.payxpert.exception.InvalidInputException;
 
 public class PayXpertApp {
     private static Scanner scanner = new Scanner(System.in);
@@ -201,54 +204,62 @@ public class PayXpertApp {
     
     private static void addEmployee() throws ParseException {
         System.out.println("\n=== Add New Employee ===");
-        System.out.print("Enter First Name: ");
-        String firstName = scanner.nextLine();
-        
-        System.out.print("Enter Last Name: ");
-        String lastName = scanner.nextLine();
-        
-        System.out.print("Enter Email: ");
-        String email = scanner.nextLine();
-        
-        System.out.print("Enter Phone Number: ");
-        String phoneNumber = scanner.nextLine();
-        
-        System.out.print("Enter Hire Date (yyyy-MM-dd): ");
-        String hireDateStr = scanner.nextLine();
-        java.util.Date hireDate = dateFormat.parse(hireDateStr);
-        
-        System.out.print("Enter Job Title: ");
-        String jobTitle = scanner.nextLine();
-        
-        System.out.print("Enter Department: ");
-        String department = scanner.nextLine();
-        
-        System.out.print("Enter Salary: ");
-        double salary = scanner.nextDouble();
-        scanner.nextLine();
-        
-        System.out.print("Enter Gender (MALE/FEMALE/OTHER): ");
-        String genderStr = scanner.nextLine();
-        Gender gender = Gender.valueOf(genderStr.toUpperCase());
-        
         Employee employee = new Employee();
-        employee.setFirstName(firstName);
-        employee.setLastName(lastName);
-        employee.setEmail(email);
-        employee.setPhoneNumber(phoneNumber);
-        employee.setHireDate(hireDate);
-        employee.setJobTitle(jobTitle);
-        employee.setDepartment(department);
-        employee.setSalary(salary);
-        employee.setGender(gender);
         
         try {
+            System.out.print("First Name: ");
+            employee.setFirstName(scanner.nextLine());
+            
+            System.out.print("Last Name: ");
+            employee.setLastName(scanner.nextLine());
+            
+            System.out.print("Email: ");
+            employee.setEmail(scanner.nextLine());
+            
+            System.out.print("Phone Number: ");
+            employee.setPhoneNumber(scanner.nextLine());
+            
+            System.out.print("Hire Date (YYYY-MM-DD): ");
+            String hireDateStr = scanner.nextLine();
+            employee.setHireDate(new SimpleDateFormat("yyyy-MM-dd").parse(hireDateStr));
+            
+            System.out.print("Job Title: ");
+            employee.setJobTitle(scanner.nextLine());
+            
+            System.out.print("Department: ");
+            employee.setDepartment(scanner.nextLine());
+            
+            System.out.print("Salary: ");
+            double salary = scanner.nextDouble();
+            scanner.nextLine(); // consume newline
+            if (salary <= 0) {
+                throw new InvalidInputException("Salary must be greater than 0");
+            }
+            employee.setSalary(salary);
+            
+            System.out.print("Gender (MALE/FEMALE/OTHER): ");
+            String genderStr = scanner.nextLine().toUpperCase();
+            try {
+                employee.setGender(Gender.valueOf(genderStr));
+            } catch (IllegalArgumentException e) {
+                throw new InvalidInputException("Invalid gender. Must be MALE, FEMALE, or OTHER");
+            }
+            
             boolean success = employeeService.addEmployee(employee);
             if (success) {
-                System.out.println("Employee added successfully!");
+                System.out.println("\nEmployee added successfully!");
+                System.out.println("\nEmployee Details:");
+                displayEmployee(employee);
             } else {
                 System.out.println("Failed to add employee.");
             }
+            
+        } catch (InvalidInputException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (ParseException e) {
+            System.out.println("Error: Invalid date format. Please use YYYY-MM-DD");
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Invalid number format for salary");
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -256,32 +267,92 @@ public class PayXpertApp {
 
     // Additional helper methods for other operations...
  // Employee Operations
-    private static void updateEmployee() throws ParseException {
+    private static void updateEmployee() throws Exception {
         System.out.println("\n=== Update Employee ===");
-        System.out.print("Enter Employee ID to update: ");
+        System.out.print("Enter Employee ID: ");
         int employeeId = scanner.nextInt();
-        scanner.nextLine();
-
+        scanner.nextLine(); // consume newline
+        
         try {
             Employee employee = employeeService.getEmployeeById(employeeId);
+            System.out.println("\nCurrent Details:");
+            displayEmployee(employee);
             
-            // Get updated information
-            System.out.print("Enter new First Name (press Enter to keep current): ");
+            System.out.println("\nEnter new details (press Enter to keep current value):");
+            
+            // First Name
+            System.out.print("First Name [" + employee.getFirstName() + "]: ");
             String input = scanner.nextLine();
-            if (!input.isEmpty()) {
+            if (!input.trim().isEmpty()) {
                 employee.setFirstName(input);
             }
             
-            // Similar prompts for other fields...
+            // Last Name
+            System.out.print("Last Name [" + employee.getLastName() + "]: ");
+            input = scanner.nextLine();
+            if (!input.trim().isEmpty()) {
+                employee.setLastName(input);
+            }
             
-            boolean success = employeeService.updateEmployee(employee);
-            if (success) {
-                System.out.println("Employee updated successfully!");
+            // Email
+            System.out.print("Email [" + employee.getEmail() + "]: ");
+            input = scanner.nextLine();
+            if (!input.trim().isEmpty()) {
+                employee.setEmail(input);
+            }
+            
+            // Phone Number
+            System.out.print("Phone Number [" + employee.getPhoneNumber() + "]: ");
+            input = scanner.nextLine();
+            if (!input.trim().isEmpty()) {
+                employee.setPhoneNumber(input);
+            }
+            
+            // Job Title
+            System.out.print("Job Title [" + employee.getJobTitle() + "]: ");
+            input = scanner.nextLine();
+            if (!input.trim().isEmpty()) {
+                employee.setJobTitle(input);
+            }
+            
+            // Department
+            System.out.print("Department [" + employee.getDepartment() + "]: ");
+            input = scanner.nextLine();
+            if (!input.trim().isEmpty()) {
+                employee.setDepartment(input);
+            }
+            
+            // Salary
+            System.out.print("Salary [" + employee.getSalary() + "]: ");
+            input = scanner.nextLine();
+            if (!input.trim().isEmpty()) {
+                employee.setSalary(Double.parseDouble(input));
+            }
+            
+            // Gender
+            System.out.print("Gender [" + employee.getGender() + "]: ");
+            input = scanner.nextLine();
+            if (!input.trim().isEmpty()) {
+                employee.setGender(Gender.valueOf(input.toUpperCase()));
+            }
+            
+            // Update the employee
+            if (employeeService.updateEmployee(employee)) {
+                System.out.println("\nEmployee updated successfully!");
+                System.out.println("\nUpdated Details:");
+                displayEmployee(employee);
             } else {
                 System.out.println("Failed to update employee.");
             }
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            
+        } catch (EmployeeNotFoundException e) {
+            System.out.println("Error: Employee not found with ID: " + employeeId);
+        } catch (InvalidInputException e) {
+            System.out.println("Error: Invalid input - " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Invalid number format for salary");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: Invalid gender value. Use MALE, FEMALE, or OTHER");
         }
     }
 
@@ -554,5 +625,18 @@ public class PayXpertApp {
         System.out.println("Taxable Income: $" + tax.getTaxableIncome());
         System.out.println("Tax Amount: $" + tax.getTaxAmount());
         System.out.println("Tax Percentage: " + tax.getTaxPercentage() + "%");
+    }
+    
+    private static void displayEmployee(Employee emp) {
+        System.out.println("\nEmployee Details:");
+        System.out.println("ID: " + emp.getEmployeeId());
+        System.out.println("Name: " + emp.getFirstName() + " " + emp.getLastName());
+        System.out.println("Email: " + emp.getEmail());
+        System.out.println("Phone: " + emp.getPhoneNumber());
+        System.out.println("Gender: " + emp.getGender());
+        System.out.println("Hire Date: " + emp.getHireDate());
+        System.out.println("Job Title: " + emp.getJobTitle());
+        System.out.println("Department: " + emp.getDepartment());
+        System.out.println("Salary: $" + emp.getSalary());
     }
 }

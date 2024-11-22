@@ -30,7 +30,7 @@ public class HighIncomeTaxTest {
     
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    	MockitoAnnotations.openMocks(this);
         taxService = new TaxServiceImpl();
     }
     

@@ -135,20 +135,83 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public boolean removeEmployee(int employeeId) 
             throws DatabaseConnectionException, EmployeeNotFoundException, ClassNotFoundException {
-        try (Connection conn = ConnectionHelper.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(
-                "DELETE FROM employees WHERE employee_id = ?")) {
+        Connection conn = null;
+        try {
+            conn = ConnectionHelper.getConnection();
+            conn.setAutoCommit(false); // Start transaction
             
-            stmt.setInt(1, employeeId);
-            int rowsAffected = stmt.executeUpdate();
-            
-            if (rowsAffected == 0) {
-                throw new EmployeeNotFoundException("Employee not found with ID: " + employeeId);
+            try {
+                // First delete all related records in correct order
+            	deleteEmployeeDeductions(conn, employeeId);    // Add this line
+                deleteAttendanceRecords(conn, employeeId);     // Add this line
+                deleteFinancialRecords(conn, employeeId);
+                deletePayrollRecords(conn, employeeId);
+                deleteTaxRecords(conn, employeeId);
+                
+                // Then delete the employee
+                PreparedStatement stmt = conn.prepareStatement(
+                    "DELETE FROM employees WHERE employee_id = ?");
+                stmt.setInt(1, employeeId);
+                int rowsAffected = stmt.executeUpdate();
+                
+                if (rowsAffected == 0) {
+                    throw new EmployeeNotFoundException("Employee not found with ID: " + employeeId);
+                }
+                
+                conn.commit(); // Commit transaction
+                return true;
+                
+            } catch (Exception e) {
+                conn.rollback(); // Rollback on error
+                throw e;
             }
-            return true;
         } catch (SQLException e) {
             throw new DatabaseConnectionException("Error removing employee: " + e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    // Log the error
+                }
+            }
         }
+    }
+    
+    private void deleteEmployeeDeductions(Connection conn, int employeeId) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+            "DELETE FROM employee_deductions WHERE employee_id = ?");
+        stmt.setInt(1, employeeId);
+        stmt.executeUpdate();
+    }
+    
+    private void deleteAttendanceRecords(Connection conn, int employeeId) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+            "DELETE FROM attendance WHERE employee_id = ?");
+        stmt.setInt(1, employeeId);
+        stmt.executeUpdate();
+    }
+    
+    private void deleteFinancialRecords(Connection conn, int employeeId) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+            "DELETE FROM financial_records WHERE employee_id = ?");
+        stmt.setInt(1, employeeId);
+        stmt.executeUpdate();
+    }
+
+    private void deletePayrollRecords(Connection conn, int employeeId) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+            "DELETE FROM payroll WHERE employee_id = ?");
+        stmt.setInt(1, employeeId);
+        stmt.executeUpdate();
+    }
+
+    private void deleteTaxRecords(Connection conn, int employeeId) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+            "DELETE FROM tax WHERE employee_id = ?");
+        stmt.setInt(1, employeeId);
+        stmt.executeUpdate();
     }
 
     private void validateEmployee(Employee employee) throws InvalidInputException {
