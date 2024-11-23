@@ -1,4 +1,4 @@
-there is still some another small enquiry based on the output... ill first attach the dml query which represents the data/values/rows/entries present in each tables initially
+
 
 -- Employee Table Entries
 INSERT INTO employees (first_name, last_name, email, phone_number, hire_date, job_title, department, salary, gender) 
@@ -89,7 +89,7 @@ VALUES
 (5, 'PENSION', 5.50, true, '2023-05-01'),  -- 5.5% of basic salary
 (5, 'PROFESSIONAL_FEES', 200.00, true, '2023-05-01');
 
-based on this entries... next ill post the comprehensive test cases which we use to test the output matches the expected output or not... 
+
 
 === REVISED COMPREHENSIVE TEST CASE FOR PAYXPERT SYSTEM ===
 
