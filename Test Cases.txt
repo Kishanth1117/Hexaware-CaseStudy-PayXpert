@@ -1,0 +1,345 @@
+=== COMPREHENSIVE TEST CASE FOR PAYXPERT SYSTEM ===
+
+1. EMPLOYEE MANAGEMENT TESTING
+
+1.1. View All Employees (Initial State)
+Action: Select Option 1 -> 5
+Expected Output: Display of 5 existing employees:
+- John Doe (ID: 1)
+- Jane Smith (ID: 2)
+- Mike Johnson (ID: 3)
+- Sarah Williams (ID: 4)
+- David Brown (ID: 5)
+
+1.2. Add New Employee
+Action: Select Option 1 -> 1
+Input:
+- First Name: Robert
+- Last Name: Wilson
+- Email: robert.wilson@email.com
+- Phone: 6789012345
+- Gender: MALE
+- Hire Date: 2024-01-15
+- Job Title: Sales Manager
+- Department: Sales
+- Salary: 80000
+Expected Output: "Employee added successfully!"
+
+1.3. View Employee Details
+Action: Select Option 1 -> 4
+Input: Employee ID: 6 (Robert Wilson)
+Expected Output: Complete details of Robert Wilson
+
+1.4. Update Employee
+Action: Select Option 1 -> 2
+Input: 
+- Employee ID: 6
+- New Salary: 85000
+- New Phone: 6789012346
+Expected Output: "Employee updated successfully!"
+
+1.5. Remove Employee
+Action: Select Option 1 -> 3
+Input: Employee ID: 5 (David Brown)
+Expected Output: "Employee removed successfully!"
+
+2. PAYROLL MANAGEMENT TESTING
+
+2.1. Generate Payroll
+Action: Select Option 2 -> 1
+Input:
+- Employee ID: 1 (John Doe)
+- Start Date: 2024-01-01
+- End Date: 2024-01-31
+Expected Output: 
+- Basic Salary: 75000.00
+- Overtime: 500.00
+- Deductions: 1000.00
+- Net Salary: 74500.00
+
+2.2. View Payroll by ID
+Action: Select Option 2 -> 2
+Input: Payroll ID: 1
+Expected Output: Detailed payroll information for John Doe
+
+2.3. View Employee Payrolls
+Action: Select Option 2 -> 3
+Input: Employee ID: 1
+Expected Output: List of all payrolls for John Doe
+
+2.4. View Payrolls for Period
+Action: Select Option 2 -> 4
+Input:
+- Start Date: 2024-01-01
+- End Date: 2024-01-31
+Expected Output: All payrolls generated in January 2024
+
+3. TAX MANAGEMENT TESTING
+
+3.1. Calculate Tax
+Action: Select Option 3 -> 1
+Input:
+- Employee ID: 3 (Mike Johnson, Highest Salary)
+- Tax Year: 2024
+Expected Output:
+- Taxable Income: 95000.00
+- Tax Amount: ~23750.00 (25%)
+- Tax Percentage: 25.00%
+
+3.2. View Tax by ID
+Action: Select Option 3 -> 2
+Input: Tax ID: 1
+Expected Output: Tax details for the specified tax record
+
+3.3. View Employee Taxes
+Action: Select Option 3 -> 3
+Input: Employee ID: 3
+Expected Output: All tax records for Mike Johnson
+
+3.4. View Taxes for Year
+Action: Select Option 3 -> 4
+Input: Tax Year: 2024
+Expected Output: All tax records for 2024
+
+4. FINANCIAL RECORDS TESTING
+
+4.1. Add Financial Record
+Action: Select Option 4 -> 1
+Input:
+- Employee ID: 2 (Jane Smith)
+- Date: 2024-01-15
+- Description: Performance Bonus
+- Amount: 5000
+- Record Type: BONUS
+Expected Output: "Financial record added successfully!"
+
+4.2. View Record by ID
+Action: Select Option 4 -> 2
+Input: Record ID: [last inserted ID]
+Expected Output: Details of Jane Smith's bonus record
+
+4.3. View Employee Records
+Action: Select Option 4 -> 3
+Input: Employee ID: 2
+Expected Output: All financial records for Jane Smith
+
+4.4. View Records for Date
+Action: Select Option 4 -> 4
+Input: Date: 2024-01-15
+Expected Output: All financial records for January 15, 2024
+
+5. ERROR HANDLING TESTING
+
+5.1. Invalid Employee ID
+Action: Try to view employee details
+Input: Employee ID: 999
+Expected Output: "Employee not found with ID: 999"
+
+5.2. Invalid Date Format
+Action: Try to generate payroll
+Input: Start Date: 2024/01/01 (wrong format)
+Expected Output: "Invalid date format. Please use YYYY-MM-DD"
+
+5.3. Invalid Tax Year
+Action: Try to calculate tax
+Input: Tax Year: 202A
+Expected Output: "Invalid tax year format"
+
+5.4. Negative Amount
+Action: Try to add financial record
+Input: Amount: -1000
+Expected Output: "Amount must be greater than 0"
+
+5.5. Invalid Email Format
+Action: Try to add employee
+Input: Email: invalid.email
+Expected Output: "Invalid email format"
+
+VERIFICATION STEPS:
+1. Each operation should return appropriate success/error messages
+2. Database should be updated correctly after each operation
+3. All calculations (salary, tax, etc.) should be accurate
+4. Data integrity should be maintained
+5. All error cases should be handled gracefully
+
+Would you like me to execute this test case and provide the actual results for each operation?
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+==============================================================================================================================================
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+=== REVISED COMPREHENSIVE TEST CASE FOR PAYXPERT SYSTEM ===
+
+1. EMPLOYEE MANAGEMENT TESTING (Already Working)
+
+1.1. View All Employees (Initial State)
+Action: Select Option 1 -> 5
+Expected Output: Display of 5 existing employees:
+- John Doe (ID: 1)
+- Jane Smith (ID: 2)
+- Mike Johnson (ID: 3)
+- Sarah Williams (ID: 4)
+- David Brown (ID: 5)
+
+1.2. Add New Employee
+Action: Select Option 1 -> 1
+Input:
+- First Name: Robert
+- Last Name: Wilson
+- Email: robert.wilson@email.com
+- Phone: 6789012345
+- Gender: MALE
+- Hire Date: 2024-01-15
+- Job Title: Sales Manager
+- Department: Sales
+- Salary: 80000
+Expected Output: "Employee added successfully!"
+
+1.3. View Employee Details
+Action: Select Option 1 -> 4
+Input: Employee ID: 6 (Robert Wilson)
+Expected Output: Complete details of Robert Wilson
+
+1.4. Update Employee
+Action: Select Option 1 -> 2
+Input: 
+- Employee ID: 6
+- New Salary: 85000
+- New Phone: 6789012346
+Expected Output: "Employee updated successfully!"
+
+1.5. Remove Employee
+Action: Select Option 1 -> 3
+Input: Employee ID: 5 (David Brown)
+Expected Output: "Employee removed successfully!"
+
+
+2. PAYROLL MANAGEMENT TESTING (Revised)
+
+2.1. Generate Monthly Payroll
+Action: Select 2 -> 1
+Input:
+- Employee ID: 1 (John Doe)
+- Start Date: 2024-01-01
+- End Date: 2024-01-31
+Expected Output:
+- Basic Salary: 6250.00 (75000/12)
+- Overtime: Calculate from attendance records
+  * Hourly Rate = 6250/(22*8) ≈ 35.51
+  * Total Overtime Hours from attendance = 6.0
+  * Overtime Pay = 6.0 * 35.51 * 1.5 ≈ 319.59
+- Deductions:
+  * Tax (10%): 625.00
+  * Insurance: 500.00
+  * Pension (5%): 312.50
+  Total Deductions: 1437.50
+- Net Salary: 5132.09 (6250 + 319.59 - 1437.50)
+
+2.2. View Payroll by ID
+Action: Select 2 -> 2
+Input: Latest generated payroll ID
+Expected Output: Complete payroll details matching above calculations
+
+2.3. View Employee Payrolls
+Action: Select 2 -> 3
+Input: Employee ID: 1
+Expected Output: List of all payrolls including:
+- Previous payroll from November 2023
+- Newly generated January 2024 payroll
+
+2.4. View Payrolls for Period
+Action: Select 2 -> 4
+Input:
+- Start Date: 2024-01-01
+- End Date: 2024-01-31
+Expected Output: All January 2024 payrolls
+
+3. TAX MANAGEMENT TESTING (Revised)
+
+3.1. Calculate Tax
+Action: Select 3 -> 1
+Input:
+- Employee ID: 3 (Mike Johnson, Salary: 95000)
+- Tax Year: 2024
+Expected Output:
+- Taxable Income: 95000.00
+- Tax Calculation:
+  * First 250000: 0
+  * 250000-500000: 12500 (5%)
+  * 500000-1000000: 90000 * 20% = 18000
+  Total Tax: 30500
+- Tax Percentage: 32.11%
+
+3.2. View Tax by ID
+Action: Select 3 -> 2
+Input: Latest generated tax ID
+Expected Output: Complete tax details matching above calculation
+
+3.3. View Employee Taxes
+Action: Select 3 -> 3
+Input: Employee ID: 3
+Expected Output: 
+- 2023 tax record (from initial data)
+- 2024 tax record (newly calculated)
+
+4. FINANCIAL RECORDS TESTING (Revised)
+
+4.1. Add Financial Record
+Action: Select 4 -> 1
+Input:
+- Employee ID: 2 (Jane Smith)
+- Date: 2024-01-15
+- Description: Performance Bonus
+- Amount: 5000
+- Record Type: BONUS
+Expected Output: "Financial record added successfully!"
+Verify: Record appears in database with correct details
+
+4.2. View Record by ID
+Action: Select 4 -> 2
+Input: Latest generated record ID
+Expected Output:
+- Record ID: [new_id]
+- Employee ID: 2
+- Date: 2024-01-15
+- Description: Performance Bonus
+- Amount: 5000.00
+- Type: BONUS
+
+4.3. View Employee Records
+Action: Select 4 -> 3
+Input: Employee ID: 2
+Expected Output:
+- Previous record: Health Insurance (from initial data)
+- New record: Performance Bonus
+
+4.4. View Records for Date
+Action: Select 4 -> 4
+Input: Date: 2024-01-15
+Expected Output: All records for January 15, 2024 including the new bonus record
+
+5. ERROR HANDLING TESTING (Revised)
+
+5.1. Invalid Payroll Generation
+Input: 
+- Non-existent Employee ID
+- End Date before Start Date
+- Dates in wrong format
+Expected Output: Appropriate error messages
+
+5.2. Invalid Tax Calculation
+Input:
+- Non-existent Employee ID
+- Invalid tax year format
+- Future tax year
+Expected Output: Appropriate error messages
+
+5.3. Invalid Financial Record
+Input:
+- Negative amount
+- Invalid record type
+- Future date
+Expected Output: Appropriate validation errors
