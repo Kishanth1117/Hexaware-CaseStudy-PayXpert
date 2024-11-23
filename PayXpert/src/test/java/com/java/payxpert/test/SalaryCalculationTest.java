@@ -33,11 +33,10 @@ public class SalaryCalculationTest {
 		payrollService = new PayrollServiceImpl();
 	}
 
-	// Test Case: CalculateGrossSalaryForEmployee
-	// Objective: Verify that the system correctly calculates the gross salary for an employee
+
 	@Test
 	public void testCalculateGrossSalaryForEmployee() throws Exception {
-		// Arrange
+
 		int employeeId = 1;
 		double basicSalary = 50000.0;
 		double overtime = 5000.0;
@@ -49,10 +48,10 @@ public class SalaryCalculationTest {
 		when(mockResultSet.getDouble("basic_salary")).thenReturn(basicSalary);
 		when(mockResultSet.getDouble("overtime_pay")).thenReturn(overtime);
 
-		// Act
+
 		PayRoll payroll = payrollService.generatePayroll(employeeId, "2023-01-01", "2023-01-31");
 
-		// Assert
+
 		assertEquals(expectedGrossSalary, payroll.getBasicSalary() + payroll.getOvertime(), 0.01);
 	}
 }

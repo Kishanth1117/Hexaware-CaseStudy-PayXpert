@@ -35,11 +35,10 @@ public class PayrollBatchTest {
 		payrollService = new PayrollServiceImpl();
 	}
 
-	// Test Case: ProcessPayrollForMultipleEmployees
-	// Objective: Test the end-to-end payroll processing for a batch of employees
+
 	@Test
 	public void testProcessPayrollForMultipleEmployees() throws Exception {
-		// Arrange
+
 		String startDate = "2023-01-01";
 		String endDate = "2023-01-31";
 
@@ -48,14 +47,14 @@ public class PayrollBatchTest {
 		when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
 		when(mockResultSet.next()).thenReturn(true, true, true, false); // 3 employees
 
-		// Mock data for each employee
+
 		when(mockResultSet.getInt("employee_id")).thenReturn(1, 2, 3);
 		when(mockResultSet.getDouble("basic_salary")).thenReturn(5000.0, 6000.0, 7000.0);
 
-		// Act
+
 		List<PayRoll> payrolls = payrollService.getPayrollsForPeriod(startDate, endDate);
 
-		// Assert
+
 		assertNotNull(payrolls);
 		assertEquals(3, payrolls.size());
 		assertTrue(payrolls.stream().allMatch(p -> p.getBasicSalary() > 0));

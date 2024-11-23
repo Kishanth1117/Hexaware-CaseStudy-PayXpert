@@ -34,32 +34,29 @@ public class InvalidEmployeeDataTest {
 		employeeService = new EmployeeServiceImpl();
 	}
 
-	// Test Case: VerifyErrorHandlingForInvalidEmployeeData
-	// Objective: Ensure the system handles invalid input data gracefully
+
 	@Test(expected = InvalidInputException.class)
 	public void testVerifyErrorHandlingForInvalidEmployeeData() throws Exception {
-		// Arrange
+
 		Employee employee = new Employee();
-		// Set invalid data
-		employee.setFirstName(""); // Empty name should throw exception
-		employee.setEmail("invalid-email"); // Invalid email format
-		employee.setSalary(-1000); // Negative salary
+
+		employee.setFirstName(""); 
+		employee.setEmail("invalid-email"); 
+		employee.setSalary(-1000); 
 
 		when(ConnectionHelper.getConnection()).thenReturn(mockConnection);
 
-		// Act
-		employeeService.addEmployee(employee); // Should throw InvalidInputException
+		employeeService.addEmployee(employee); 
 	}
 
 	@Test(expected = InvalidInputException.class)
 	public void testInvalidEmailFormat() throws Exception {
-		// Arrange
+
 		Employee employee = new Employee();
 		employee.setFirstName("John");
-		employee.setEmail("invalid-email"); // Invalid email format
+		employee.setEmail("invalid-email"); 
 
-		// Act
-		employeeService.addEmployee(employee); // Should throw InvalidInputException
+		employeeService.addEmployee(employee); 
 	}
 
 	@Test(expected = InvalidInputException.class)
@@ -68,9 +65,9 @@ public class InvalidEmployeeDataTest {
 		Employee employee = new Employee();
 		employee.setFirstName("John");
 		employee.setEmail("john@example.com");
-		employee.setSalary(-1000); // Negative salary
+		employee.setSalary(-1000); 
 
-		// Act
-		employeeService.addEmployee(employee); // Should throw InvalidInputException
+		
+		employeeService.addEmployee(employee); 
 	}
 }

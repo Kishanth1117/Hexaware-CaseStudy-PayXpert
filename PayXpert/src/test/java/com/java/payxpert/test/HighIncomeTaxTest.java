@@ -29,36 +29,35 @@ public class HighIncomeTaxTest {
 	private TaxServiceImpl taxService;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		MockitoAnnotations.openMocks(this);
 		taxService = new TaxServiceImpl();
-	}
 
-	// Test Case: VerifyTaxCalculationForHighIncomeEmployee
-	// Objective: Test the system's ability to calculate taxes for a high-income employee
-	@Test
-	public void testVerifyTaxCalculationForHighIncomeEmployee() throws Exception {
-		// Arrange
-		int employeeId = 1;
-		String taxYear = "2023";
-		double taxableIncome = 1500000.0; // High income
+		try (var mockedStatic = mockStatic(ConnectionHelper.class)) {
+			mockedStatic.when(ConnectionHelper::getConnection).thenReturn(mockConnection);
+		}
 
-		when(ConnectionHelper.getConnection()).thenReturn(mockConnection);
 		when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
 		when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
-		when(mockResultSet.next()).thenReturn(true);
-		when(mockResultSet.getDouble("total_income")).thenReturn(taxableIncome);
+	}
 
-		// Act
+	@Test
+	public void testVerifyTaxCalculationForHighIncomeEmployee() throws Exception {
+
+		int employeeId = 3;
+		String taxYear = "2024";
+		double salary = 95000.00;
+
+		when(mockResultSet.next()).thenReturn(true);
+		when(mockResultSet.getDouble("salary")).thenReturn(salary);
+
 		Tax tax = taxService.calculateTax(employeeId, taxYear);
 
-		// Assert
-		assertNotNull(tax);
-		assertEquals(employeeId, tax.getEmployeeId());
-		assertEquals(taxYear, tax.getTaxYear());
-		assertEquals(taxableIncome, tax.getTaxableIncome(), 0.01);
-		// For high income (>1000000), tax should be more than 30%
-		assertTrue(tax.getTaxPercentage() >= 30.0);
-		assertTrue(tax.getTaxAmount() > 0);
+		assertNotNull("Tax calculation should not be null", tax);
+		assertEquals("Employee ID should match", employeeId, tax.getEmployeeId());
+		assertEquals("Tax year should match", taxYear, tax.getTaxYear());
+		assertEquals("Taxable income should match salary", salary, tax.getTaxableIncome(), 0.01);
+		assertEquals("Tax amount should be correctly calculated", 30500.00, tax.getTaxAmount(), 0.01);
+		assertEquals("Tax percentage should be correctly calculated", 32.11, tax.getTaxPercentage(), 0.01);
 	}
 }

@@ -15,19 +15,19 @@ public class TaxServiceImpl implements ITaxService {
 	public Tax calculateTax(int employeeId, String taxYear) 
 			throws TaxCalculationException, DatabaseConnectionException, ClassNotFoundException {
 		try (Connection conn = ConnectionHelper.getConnection()) {
-			// Get annual taxable income
+
 			double taxableIncome = calculateTaxableIncome(conn, employeeId, taxYear);
 			if (taxableIncome <= 0) {
 				throw new TaxCalculationException("No taxable income found for the specified year");
 			}
 
-			// Calculate tax amount based on slabs
+
 			double taxAmount = calculateTaxAmount(taxableIncome);
 
-			// Calculate tax percentage (rounded to 2 decimal places)
+
 			double taxPercentage = Math.round((taxAmount / taxableIncome) * 10000.0) / 100.0;
 
-			// Create and save tax record
+
 			Tax tax = new Tax();
 			tax.setEmployeeId(employeeId);
 			tax.setTaxYear(taxYear);
@@ -131,25 +131,17 @@ public class TaxServiceImpl implements ITaxService {
 	private double calculateTaxAmount(double taxableIncome) {
 		double taxAmount = 0.0;
 
-		// Tax slabs calculation
-		if (taxableIncome <= 250000) {
+		if (taxableIncome <= 25000) {
 			taxAmount = 0.0;
-		} else if (taxableIncome <= 500000) {
-			taxAmount = (taxableIncome - 250000) * 0.05;
-		} else if (taxableIncome <= 1000000) {
-			// First 250000: 0
-			// 250000-500000: (500000-250000)*0.05 = 12500
-			// 500000-taxableIncome: (taxableIncome-500000)*0.20
-			taxAmount = 12500 + ((taxableIncome - 500000) * 0.20);
+		} else if (taxableIncome <= 50000) {
+			taxAmount = (taxableIncome - 25000) * 0.05;
+		} else if (taxableIncome <= 100000) {
+			taxAmount = 12500 + ((taxableIncome - 50000) * 0.20);
 		} else {
-			// First 250000: 0
-			// 250000-500000: 12500
-			// 500000-1000000: 100000
-			// Above 1000000: (taxableIncome-1000000)*0.30
-			taxAmount = 112500 + ((taxableIncome - 1000000) * 0.30);
+			taxAmount = 112500 + ((taxableIncome - 100000) * 0.30);
 		}
 
-		return Math.round(taxAmount * 100.0) / 100.0; // Round to 2 decimal places
+		return Math.round(taxAmount * 100.0) / 100.0;
 	}
 
 	private void saveTaxRecord(Connection conn, Tax tax) throws SQLException {
@@ -161,7 +153,7 @@ public class TaxServiceImpl implements ITaxService {
 			ps.setString(2, tax.getTaxYear());
 			ps.setDouble(3, tax.getTaxableIncome());
 			ps.setDouble(4, tax.getTaxAmount());
-			ps.setDouble(5, Math.round(tax.getTaxPercentage() * 100.0) / 100.0); // Round percentage
+			ps.setDouble(5, Math.round(tax.getTaxPercentage() * 100.0) / 100.0); 
 
 			ps.executeUpdate();
 

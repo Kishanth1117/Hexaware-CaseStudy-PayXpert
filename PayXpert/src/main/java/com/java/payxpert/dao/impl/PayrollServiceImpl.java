@@ -20,17 +20,17 @@ public class PayrollServiceImpl implements IPayrollService {
 								"pay_period_start, pay_period_end, payment_date) " +
 								"VALUES (?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
 
-			// Get employee's basic salary (monthly)
+
 			double basicSalary = getEmployeeBasicSalary(conn, employeeId) / 12;
 
-			// Calculate overtime and deductions
+
 			double overtimePay = calculateOvertimePay(employeeId, startDate, endDate);
 			double deductions = calculateDeductions(employeeId);
 
-			// Calculate net salary
+
 			double netSalary = basicSalary + overtimePay - deductions;
 
-			// Set values in prepared statement
+
 			stmt.setInt(1, employeeId);
 			stmt.setDouble(2, basicSalary);
 			stmt.setDouble(3, overtimePay);
@@ -160,9 +160,9 @@ public class PayrollServiceImpl implements IPayrollService {
 
 	private double calculateOvertimePay(int employeeId, String startDate, String endDate) throws SQLException, ClassNotFoundException {
 		try (Connection conn = ConnectionHelper.getConnection()) {
-			// Get employee's monthly salary
+
 			double monthlySalary = getEmployeeBasicSalary(conn, employeeId) / 12;
-			// Calculate hourly rate (22 working days, 8 hours per day)
+
 			double hourlyRate = monthlySalary / (22 * 8);
 
 			String sql = "SELECT COALESCE(SUM(overtime_hours), 0) as total_overtime " +
@@ -178,7 +178,7 @@ public class PayrollServiceImpl implements IPayrollService {
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
 					double overtimeHours = rs.getDouble("total_overtime");
-					return Math.round(overtimeHours * hourlyRate * 1.5 * 100.0) / 100.0; // 1.5x overtime rate, rounded to 2 decimals
+					return Math.round(overtimeHours * hourlyRate * 1.5 * 100.0) / 100.0; 
 				}
 			}
 		}
@@ -190,10 +190,10 @@ public class PayrollServiceImpl implements IPayrollService {
 			double monthlySalary = getEmployeeBasicSalary(conn, employeeId) / 12;
 			double totalDeductions = 0.0;
 
-			// Tax deduction (10%)
+
 			totalDeductions += monthlySalary * 0.10;
 
-			// Get fixed deductions from employee_deductions table
+
 			String sql = "SELECT deduction_type, amount " +
 					"FROM employee_deductions " +
 					"WHERE employee_id = ? " +

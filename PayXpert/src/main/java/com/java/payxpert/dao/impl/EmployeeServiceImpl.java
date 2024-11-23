@@ -141,14 +141,13 @@ public class EmployeeServiceImpl implements IEmployeeService {
 			conn.setAutoCommit(false); // Start transaction
 
 			try {
-				// First delete all related records in correct order
-				deleteEmployeeDeductions(conn, employeeId);    // Add this line
-				deleteAttendanceRecords(conn, employeeId);     // Add this line
+
+				deleteEmployeeDeductions(conn, employeeId);    
+				deleteAttendanceRecords(conn, employeeId);     
 				deleteFinancialRecords(conn, employeeId);
 				deletePayrollRecords(conn, employeeId);
 				deleteTaxRecords(conn, employeeId);
 
-				// Then delete the employee
 				PreparedStatement stmt = conn.prepareStatement(
 						"DELETE FROM employees WHERE employee_id = ?");
 				stmt.setInt(1, employeeId);
@@ -158,11 +157,11 @@ public class EmployeeServiceImpl implements IEmployeeService {
 					throw new EmployeeNotFoundException("Employee not found with ID: " + employeeId);
 				}
 
-				conn.commit(); // Commit transaction
+				conn.commit(); 
 				return true;
 
 			} catch (Exception e) {
-				conn.rollback(); // Rollback on error
+				conn.rollback(); 
 				throw e;
 			}
 		} catch (SQLException e) {
@@ -173,7 +172,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 					conn.setAutoCommit(true);
 					conn.close();
 				} catch (SQLException e) {
-					// Log the error
+					throw new DatabaseConnectionException("Error : " + e.getMessage());
 				}
 			}
 		}
@@ -227,6 +226,6 @@ public class EmployeeServiceImpl implements IEmployeeService {
 		if (employee.getSalary() <= 0) {
 			throw new InvalidInputException("Salary must be greater than 0");
 		}
-		// Add more validations as needed
+
 	}
 }

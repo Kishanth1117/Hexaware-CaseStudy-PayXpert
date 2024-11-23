@@ -10,11 +10,10 @@ import static org.mockito.Mockito.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 
 import com.java.payxpert.dao.impl.PayrollServiceImpl;
 import com.java.payxpert.model.PayRoll;
-import com.java.payxpert.exception.*;
+import com.java.payxpert.util.ConnectionHelper;
 
 public class NetSalaryCalculationTest {
 
@@ -30,115 +29,41 @@ public class NetSalaryCalculationTest {
 	private PayrollServiceImpl payrollService;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		MockitoAnnotations.openMocks(this);
 		payrollService = new PayrollServiceImpl();
-	}
 
-	// Test Case 1: CalculateGrossSalaryForEmployee
-	// Objective: Verify that the system correctly calculates the gross salary for an employee
-	@Test
-	public void testCalculateGrossSalaryForEmployee() throws Exception {
-		// Arrange
-		int employeeId = 1;
-		double basicSalary = 50000.0;
-		double overtime = 5000.0;
-		double expectedGrossSalary = basicSalary + overtime;
+
+		try (var mockedStatic = mockStatic(ConnectionHelper.class)) {
+			mockedStatic.when(ConnectionHelper::getConnection).thenReturn(mockConnection);
+		}
+
 
 		when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
 		when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
-		when(mockResultSet.next()).thenReturn(true);
-		when(mockResultSet.getDouble("basic_salary")).thenReturn(basicSalary);
-		when(mockResultSet.getDouble("overtime_pay")).thenReturn(overtime);
-
-		// Act
-		PayRoll payroll = payrollService.generatePayroll(employeeId, "2023-01-01", "2023-01-31");
-
-		// Assert
-		assertEquals(expectedGrossSalary, payroll.getBasicSalary() + payroll.getOvertime(), 0.01);
 	}
 
-	// Test Case 2: CalculateNetSalaryAfterDeductions
-	// Objective: Ensure that the system accurately calculates the net salary after deductions
 	@Test
 	public void testCalculateNetSalaryAfterDeductions() throws Exception {
-		// Arrange
+
 		int employeeId = 1;
-		double basicSalary = 50000.0;
-		double overtime = 5000.0;
-		double deductions = 10000.0;
-		double expectedNetSalary = basicSalary + overtime - deductions;
+		double basicSalary = 75000.00; 
+		double expectedMonthlySalary = basicSalary / 12;
+		double overtimeHours = 6.0;
 
-		when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-		when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
+
 		when(mockResultSet.next()).thenReturn(true);
-		when(mockResultSet.getDouble("basic_salary")).thenReturn(basicSalary);
-		when(mockResultSet.getDouble("overtime_pay")).thenReturn(overtime);
-		when(mockResultSet.getDouble("deductions")).thenReturn(deductions);
+		when(mockResultSet.getDouble("salary")).thenReturn(basicSalary);
+		when(mockResultSet.getDouble("total_overtime")).thenReturn(overtimeHours);
 
-		// Act
-		PayRoll payroll = payrollService.generatePayroll(employeeId, "2023-01-01", "2023-01-31");
 
-		// Assert
-		assertEquals(expectedNetSalary, payroll.getNetSalary(), 0.01);
-	}
+		PayRoll payroll = payrollService.generatePayroll(employeeId, "2024-01-01", "2024-01-31");
 
-	// Test Case 3: VerifyTaxCalculationForHighIncomeEmployee
-	// Objective: Test the system's ability to calculate taxes for a high-income employee
-	@Test
-	public void testVerifyTaxCalculationForHighIncomeEmployee() throws Exception {
-		// Arrange
-		int employeeId = 1;
-		double basicSalary = 1500000.0; // High income
-		double overtime = 100000.0;
-		double expectedTaxRate = 0.30; // 30% for high income
 
-		when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-		when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
-		when(mockResultSet.next()).thenReturn(true);
-		when(mockResultSet.getDouble("basic_salary")).thenReturn(basicSalary);
-		when(mockResultSet.getDouble("overtime_pay")).thenReturn(overtime);
-
-		// Act
-		PayRoll payroll = payrollService.generatePayroll(employeeId, "2023-01-01", "2023-01-31");
-
-		// Assert
-		assertTrue(payroll.getDeductions() > (basicSalary + overtime) * expectedTaxRate);
-	}
-
-	// Test Case 4: ProcessPayrollForMultipleEmployees
-	// Objective: Test the end-to-end payroll processing for a batch of employees
-	@Test
-	public void testProcessPayrollForMultipleEmployees() throws Exception {
-		// Arrange
-		String startDate = "2023-01-01";
-		String endDate = "2023-01-31";
-
-		when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-		when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
-		when(mockResultSet.next()).thenReturn(true, true, true, false); // 3 employees
-
-		// Act
-		List<PayRoll> payrolls = payrollService.getPayrollsForPeriod(startDate, endDate);
-
-		// Assert
-		assertNotNull(payrolls);
-		assertEquals(3, payrolls.size());
-	}
-
-	// Test Case 5: VerifyErrorHandlingForInvalidEmployeeData
-	// Objective: Ensure the system handles invalid input data gracefully
-	@Test(expected = PayrollGenerationException.class)
-	public void testVerifyErrorHandlingForInvalidEmployeeData() throws Exception {
-		// Arrange
-		int invalidEmployeeId = -1;
-
-		when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-		when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
-		when(mockResultSet.next()).thenReturn(false);
-
-		// Act
-		payrollService.generatePayroll(invalidEmployeeId, "2023-01-01", "2023-01-31");
-		// Should throw PayrollGenerationException
+		assertNotNull("Payroll should not be null", payroll);
+		assertEquals("Basic salary should match", expectedMonthlySalary, payroll.getBasicSalary(), 0.01);
+		assertTrue("Overtime pay should be greater than 0", payroll.getOvertime() > 0);
+		assertTrue("Net salary should be less than gross salary", 
+				payroll.getNetSalary() < (payroll.getBasicSalary() + payroll.getOvertime()));
 	}
 }

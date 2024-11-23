@@ -25,7 +25,7 @@ public class PayXpertApp {
 			try {
 				displayMainMenu();
 				int choice = scanner.nextInt();
-				scanner.nextLine(); // Consume newline
+				scanner.nextLine(); 
 
 				switch (choice) {
 				case 1:
@@ -48,7 +48,7 @@ public class PayXpertApp {
 				}
 			} catch (Exception e) {
 				System.out.println("Error: " + e.getMessage());
-				scanner.nextLine(); // Clear the input buffer
+				scanner.nextLine(); 
 			}
 		}
 	}
@@ -64,7 +64,7 @@ public class PayXpertApp {
 	}
 
 	private static void handleEmployeeOperations() {
-		// Employee management menu and operations
+
 		System.out.println("\n=== Employee Management ===");
 		System.out.println("1. Add Employee");
 		System.out.println("2. Update Employee");
@@ -75,7 +75,7 @@ public class PayXpertApp {
 
 		try {
 			int choice = scanner.nextInt();
-			scanner.nextLine(); // Consume newline
+			scanner.nextLine(); 
 
 			switch (choice) {
 			case 1:
@@ -101,8 +101,7 @@ public class PayXpertApp {
 		}
 	}
 
-	// Similar methods for handlePayrollOperations(), handleTaxOperations(), 
-	// and handleFinancialRecordOperations()
+	
 	private static void handlePayrollOperations() {
 		System.out.println("\n=== Payroll Management ===");
 		System.out.println("1. Generate Payroll");
@@ -113,7 +112,7 @@ public class PayXpertApp {
 
 		try {
 			int choice = scanner.nextInt();
-			scanner.nextLine(); // Consume newline
+			scanner.nextLine();
 
 			switch (choice) {
 			case 1:
@@ -146,7 +145,7 @@ public class PayXpertApp {
 
 		try {
 			int choice = scanner.nextInt();
-			scanner.nextLine(); // Consume newline
+			scanner.nextLine(); 
 
 			switch (choice) {
 			case 1:
@@ -179,7 +178,7 @@ public class PayXpertApp {
 
 		try {
 			int choice = scanner.nextInt();
-			scanner.nextLine(); // Consume newline
+			scanner.nextLine(); 
 
 			switch (choice) {
 			case 1:
@@ -231,7 +230,7 @@ public class PayXpertApp {
 
 			System.out.print("Salary: ");
 			double salary = scanner.nextDouble();
-			scanner.nextLine(); // consume newline
+			scanner.nextLine(); 
 			if (salary <= 0) {
 				throw new InvalidInputException("Salary must be greater than 0");
 			}
@@ -265,13 +264,12 @@ public class PayXpertApp {
 		}
 	}
 
-	// Additional helper methods for other operations...
-	// Employee Operations
+
 	private static void updateEmployee() throws Exception {
 		System.out.println("\n=== Update Employee ===");
 		System.out.print("Enter Employee ID: ");
 		int employeeId = scanner.nextInt();
-		scanner.nextLine(); // consume newline
+		scanner.nextLine(); 
 
 		try {
 			Employee employee = employeeService.getEmployeeById(employeeId);
@@ -280,63 +278,61 @@ public class PayXpertApp {
 
 			System.out.println("\nEnter new details (press Enter to keep current value):");
 
-			// First Name
 			System.out.print("First Name [" + employee.getFirstName() + "]: ");
 			String input = scanner.nextLine();
 			if (!input.trim().isEmpty()) {
 				employee.setFirstName(input);
 			}
 
-			// Last Name
 			System.out.print("Last Name [" + employee.getLastName() + "]: ");
 			input = scanner.nextLine();
 			if (!input.trim().isEmpty()) {
 				employee.setLastName(input);
 			}
 
-			// Email
+
 			System.out.print("Email [" + employee.getEmail() + "]: ");
 			input = scanner.nextLine();
 			if (!input.trim().isEmpty()) {
 				employee.setEmail(input);
 			}
 
-			// Phone Number
+
 			System.out.print("Phone Number [" + employee.getPhoneNumber() + "]: ");
 			input = scanner.nextLine();
 			if (!input.trim().isEmpty()) {
 				employee.setPhoneNumber(input);
 			}
 
-			// Job Title
+
 			System.out.print("Job Title [" + employee.getJobTitle() + "]: ");
 			input = scanner.nextLine();
 			if (!input.trim().isEmpty()) {
 				employee.setJobTitle(input);
 			}
 
-			// Department
+
 			System.out.print("Department [" + employee.getDepartment() + "]: ");
 			input = scanner.nextLine();
 			if (!input.trim().isEmpty()) {
 				employee.setDepartment(input);
 			}
 
-			// Salary
+
 			System.out.print("Salary [" + employee.getSalary() + "]: ");
 			input = scanner.nextLine();
 			if (!input.trim().isEmpty()) {
 				employee.setSalary(Double.parseDouble(input));
 			}
 
-			// Gender
+
 			System.out.print("Gender [" + employee.getGender() + "]: ");
 			input = scanner.nextLine();
 			if (!input.trim().isEmpty()) {
 				employee.setGender(Gender.valueOf(input.toUpperCase()));
 			}
 
-			// Update the employee
+
 			if (employeeService.updateEmployee(employee)) {
 				System.out.println("\nEmployee updated successfully!");
 				System.out.println("\nUpdated Details:");
