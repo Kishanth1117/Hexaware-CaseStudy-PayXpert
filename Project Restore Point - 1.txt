@@ -1,5 +1,3 @@
-now... since we have somewhat completed the project... let us review the whole project together from first.. ill now mention all the classes that we have done in the project which i believe we have implemented from the annexure given below... you run and execute and check for any final semantic errors that is to be occurring... if you think there are some errors... ill mention the annexure again and lets again review the code we already developed... if there are no errors then provide the biggest comprehensive test cases that shows to check all the menu driven functions including all its operations per each proving that all the functionalities of the program is running 100 percent successfully.
-
 The Payroll Management System
 
 Instructions:
