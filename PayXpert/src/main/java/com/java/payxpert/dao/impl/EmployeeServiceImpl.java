@@ -217,14 +217,53 @@ public class EmployeeServiceImpl implements IEmployeeService {
 		if (employee.getFirstName() == null || employee.getFirstName().trim().isEmpty()) {
 			throw new InvalidInputException("First name cannot be empty");
 		}
+		if (!employee.getFirstName().matches("^[A-Za-z\\s]{2,50}$")) {
+			throw new InvalidInputException("First name must be 2-50 characters long and contain only letters");
+		}
 		if (employee.getLastName() == null || employee.getLastName().trim().isEmpty()) {
 			throw new InvalidInputException("Last name cannot be empty");
 		}
-		if (employee.getEmail() == null || !employee.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+		if (!employee.getLastName().matches("^[A-Za-z\\s]{2,50}$")) {
+			throw new InvalidInputException("Last name must be 2-50 characters long and contain only letters");
+		}
+		if (employee.getEmail() == null || employee.getEmail().trim().isEmpty()) {
+			throw new InvalidInputException("Email cannot be empty");
+		}
+		if (!employee.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
 			throw new InvalidInputException("Invalid email format");
+		}
+		if (employee.getPhoneNumber() == null || employee.getPhoneNumber().trim().isEmpty()) {
+			throw new InvalidInputException("Phone number cannot be empty");
+		}
+		if (!employee.getPhoneNumber().matches("^\\d{10}$")) {
+			throw new InvalidInputException("Phone number must be 10 digits");
+		}
+		if (employee.getHireDate() == null) {
+			throw new InvalidInputException("Hire date cannot be null");
+		}
+		if (employee.getHireDate().after(new java.util.Date())) {
+			throw new InvalidInputException("Hire date cannot be in the future");
+		}
+		if (employee.getJobTitle() == null || employee.getJobTitle().trim().isEmpty()) {
+			throw new InvalidInputException("Job title cannot be empty");
+		}
+		if (employee.getJobTitle().length() < 2 || employee.getJobTitle().length() > 100) {
+			throw new InvalidInputException("Job title must be between 2 and 100 characters");
+		}
+		if (employee.getDepartment() == null || employee.getDepartment().trim().isEmpty()) {
+			throw new InvalidInputException("Department cannot be empty");
+		}
+		if (employee.getDepartment().length() < 2 || employee.getDepartment().length() > 100) {
+			throw new InvalidInputException("Department must be between 2 and 100 characters");
 		}
 		if (employee.getSalary() <= 0) {
 			throw new InvalidInputException("Salary must be greater than 0");
+		}
+		if (employee.getSalary() > 1000000) { 
+			throw new InvalidInputException("Salary exceeds maximum limit");
+		}
+		if (employee.getGender() == null) {
+			throw new InvalidInputException("Gender cannot be null");
 		}
 
 	}

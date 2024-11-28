@@ -8,7 +8,6 @@ import java.util.Scanner;
 import com.java.payxpert.dao.*;
 import com.java.payxpert.dao.impl.*;
 import com.java.payxpert.model.*;
-//Add these imports at the top of PayXpertApp.java
 import com.java.payxpert.exception.EmployeeNotFoundException;
 import com.java.payxpert.exception.InvalidInputException;
 
